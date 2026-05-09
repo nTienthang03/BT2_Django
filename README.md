@@ -122,39 +122,85 @@ Lưu lịch sử khách trả tiền cho hợp đồng.
 | so_tien         | DECIMAL      | Số tiền thanh toán  |
 | ghi_chu         | TEXT         | Ghi chú             |
 | hop_dong_id     | INT (FK)     | Tham chiếu hợp đồng |
-# cấu trúc Thư mục 
+# Cấu trúc thư mục project
+
+```text
 pawnshop_project/
 │
 ├── docker-compose.yml
+│   └── File cấu hình Docker Compose chứa:
+│       - MariaDB
+│       - PhpMyAdmin
+│       - Django
 │
 ├── templates/
+│   │
 │   └── home.html
+│       └── Giao diện HTML hiển thị danh sách con nợ
 │
 └── django_app/
     │
     ├── Dockerfile
+    │   └── File build Docker Image cho Django
+    │
     ├── requirements.txt
+    │   └── Danh sách thư viện Python cần cài
+    │
     ├── manage.py
+    │   └── File quản lý project Django
     │
     ├── pawnshop/
+    │   │
     │   ├── __init__.py
+    │   │   └── Khởi tạo package Python
+    │   │
     │   ├── settings.py
+    │   │   └── File cấu hình Django:
+    │   │       - Database
+    │   │       - Template
+    │   │       - App
+    │   │
     │   ├── urls.py
+    │   │   └── File định tuyến URL chính
+    │   │
     │   ├── asgi.py
+    │   │   └── Cấu hình ASGI
+    │   │
     │   └── wsgi.py
+    │       └── Cấu hình WSGI
     │
     └── management/
+        │
         ├── __init__.py
+        │   └── Khởi tạo package app
+        │
         ├── admin.py
+        │   └── Khai báo model hiển thị trong Django Admin
+        │
         ├── apps.py
+        │   └── Cấu hình app management
+        │
         ├── models.py
+        │   └── Khai báo các bảng database:
+        │       - Khach_Hang
+        │       - Mon_Do
+        │       - Hop_Dong
+        │       - Thanh_Toan
+        │
         ├── views.py
+        │   └── Xử lý dữ liệu và render giao diện HTML
+        │
         ├── urls.py
+        │   └── Định tuyến URL cho app management
+        │
         ├── tests.py
+        │   └── File kiểm thử Django
         │
         └── migrations/
+            │
             └── __init__.py
-
+                └── Quản lý migration database
+```
 # SỬ DỤNG DOCKER TRÊN UBUNTU CHO HỆ THỐNG QUẢN LÝ TIỆM CẦM ĐỒ
 
 
