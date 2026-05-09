@@ -157,40 +157,6 @@ pawnshop_project/
 
 # SỬ DỤNG DOCKER TRÊN UBUNTU CHO HỆ THỐNG QUẢN LÝ TIỆM CẦM ĐỒ
 
-# Cập nhật Ubuntu
-
-
-```bash
-sudo apt update
-sudo apt upgrade -y
-```
-
----
-
-# Cài Docker
-
-```bash
-sudo apt install docker.io -y
-```
-
-# Kiểm tra Docker
-
-```bash
-docker --version
-```
-
----
-
-# Cài Docker Compose
-
-# Kiểm tra Docker Compose
-
-```bash
-docker-compose version
-```
-
----
-
 
 # 4. CÀI ĐẶT MÔI TRƯỜNG
 
@@ -209,21 +175,15 @@ sudo apt upgrade -y
 sudo apt install docker.io -y
 ```
 
-## Kiểm tra Docker
+
+## Kiểm tra nhanh tất cả đã cài 
 
 ```bash
-docker --version
+docker --version && docker compose version
 ```
 
 ---
-
-## Kiểm tra Docker Compose
-
-```bash
-docker compose version
-```
-
----
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/0e06bc83-8166-4583-9316-c39e4573205d" />
 
 # 5. TẠO THƯ MỤC PROJECT
 
@@ -255,6 +215,7 @@ pawnshop_project/
 ```
 
 ---
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/68405ea1-edcc-4cf2-afe9-ab15445dcaa7" />
 
 # 6. TẠO Dockerfile
 
@@ -325,8 +286,10 @@ PyMySQL
 ```
 
 ---
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/595b4772-f0bd-494a-a72c-13e914f4e089" />
 
 # 8. TẠO docker-compose.yml
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/c094f2fe-ab7b-40a8-a6d5-9cb6c30d3fc8" />
 
 ## Quay lại thư mục project
 
@@ -408,6 +371,8 @@ volumes:
 ```bash
 docker compose up --build -d
 ```
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/6b3e2122-8fb4-4055-ad54-fea8a97d7a43" />
+
 
 ## Kiểm tra container
 
@@ -416,6 +381,8 @@ docker ps
 ```
 
 ---
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/06f4c71c-9471-47b9-8d11-611a47cc0866" />
+
 
 # 10. TẠO DJANGO PROJECT
 
