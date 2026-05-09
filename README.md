@@ -308,64 +308,116 @@ sudo nano docker-compose.yml
 ```yaml
 services:
 
+  # Service MariaDB dùng để lưu trữ cơ sở dữ liệu
   mariadb:
+
+    # Sử dụng image MariaDB phiên bản 11
     image: mariadb:11
 
+    # Đặt tên container
     container_name: pawnshop_mariadb
 
+    # Tự động khởi động lại nếu container bị dừng
     restart: always
 
+    # Khai báo biến môi trường cho MariaDB
     environment:
+
+      # Mật khẩu tài khoản root
       MYSQL_ROOT_PASSWORD: root123
+
+      # Tạo database mặc định
       MYSQL_DATABASE: pawnshop_db
+
+      # Tạo user database
       MYSQL_USER: pawn_user
+
+      # Mật khẩu của user database
       MYSQL_PASSWORD: pawn123
 
+    # Mapping port
     ports:
+
+      # Port máy thật : port container
       - "3307:3306"
 
+    # Mount volume để lưu dữ liệu bền vững
     volumes:
+
+      # Volume mariadb_data sẽ lưu dữ liệu DB
       - mariadb_data:/var/lib/mysql
 
+
+
+  # Service PhpMyAdmin để quản lý database bằng giao diện web
   phpmyadmin:
+
+    # Sử dụng image phpMyAdmin chính thức
     image: phpmyadmin/phpmyadmin
 
+    # Tên container
     container_name: pawnshop_phpmyadmin
 
+    # Tự động restart
     restart: always
 
+    # Mapping port
     ports:
+
+      # Truy cập phpMyAdmin qua port 8080
       - "8080:80"
 
+    # Biến môi trường
     environment:
+
+      # Host database kết nối tới
       PMA_HOST: mariadb
+
+      # Password root MariaDB
       MYSQL_ROOT_PASSWORD: root123
 
+    # Chỉ chạy khi mariadb đã chạy
     depends_on:
       - mariadb
 
+
+
+  # Service Django
   django:
+
+    # Build image từ thư mục django_app
     build: ./django_app
 
+    # Tên container
     container_name: pawnshop_django
 
+    # Tự động restart
     restart: always
 
+    # Mapping port
     ports:
+
+      # Truy cập Django bằng port 8000
       - "8000:8000"
 
+    # Mount source code để dễ chỉnh sửa
     volumes:
+
+      # Đồng bộ thư mục django_app vào /app trong container
       - ./django_app:/app
 
+    # Django phụ thuộc MariaDB
     depends_on:
       - mariadb
 
+
+
+# Khai báo volume lưu dữ liệu MariaDB
 volumes:
+
+  # Volume chứa dữ liệu database
   mariadb_data:
 ```
-
----
-
 # 9. BUILD VÀ CHẠY HỆ THỐNG
 
 ```bash
@@ -484,87 +536,152 @@ nano management/models.py
 from django.db import models
 
 
+# =========================
+# Bảng khách hàng
+# =========================
 class Khach_Hang(models.Model):
 
+    # Họ tên khách hàng
     ho_ten = models.CharField(max_length=100)
 
+    # Số điện thoại liên hệ
     so_dien_thoai = models.CharField(max_length=20)
 
+    # Địa chỉ khách hàng
     dia_chi = models.TextField()
 
+    # Hiển thị tên khách hàng trong admin
     def __str__(self):
         return self.ho_ten
 
 
+
+# =========================
+# Bảng món đồ cầm cố
+# =========================
 class Mon_Do(models.Model):
 
+    # Tên món đồ
     ten_mon_do = models.CharField(max_length=200)
 
+    # Mô tả chi tiết món đồ
     mo_ta = models.TextField()
 
+    # Tình trạng món đồ
     tinh_trang = models.CharField(max_length=100)
 
+    # Hiển thị tên món đồ trong admin
     def __str__(self):
         return self.ten_mon_do
 
 
+
+# =========================
+# Bảng hợp đồng cầm đồ
+# =========================
 class Hop_Dong(models.Model):
 
+    # Khóa ngoại tham chiếu khách hàng
     khach_hang = models.ForeignKey(
+
+        # Liên kết tới bảng Khach_Hang
         Khach_Hang,
+
+        # Nếu khách hàng bị xóa thì hợp đồng cũng bị xóa
         on_delete=models.CASCADE
     )
 
+    # Khóa ngoại tham chiếu món đồ
     mon_do = models.ForeignKey(
+
+        # Liên kết tới bảng Mon_Do
         Mon_Do,
+
+        # Nếu món đồ bị xóa thì hợp đồng cũng bị xóa
         on_delete=models.CASCADE
     )
 
+    # Số tiền cho vay
     so_tien = models.DecimalField(
+
+        # Tổng số chữ số tối đa
         max_digits=15,
+
+        # Số chữ số sau dấu phẩy
         decimal_places=2
     )
 
+    # Ngày bắt đầu cầm đồ
     ngay_cam = models.DateField()
 
+    # Ngày hết hạn hợp đồng
     ngay_het_han = models.DateField()
 
+    # Lãi suất hợp đồng
     lai_suat = models.DecimalField(
+
+        # Tổng số chữ số
         max_digits=5,
+
+        # Số chữ số sau dấu phẩy
         decimal_places=2
     )
 
+    # Trạng thái hợp đồng
     trang_thai = models.CharField(
+
+        # Độ dài tối đa
         max_length=50,
+
+        # Giá trị mặc định
         default='Đang cầm'
     )
 
+    # Hiển thị mã hợp đồng trong admin
     def __str__(self):
         return f"HD-{self.id}"
 
 
+
+# =========================
+# Bảng thanh toán
+# =========================
 class Thanh_Toan(models.Model):
 
+    # Khóa ngoại tham chiếu hợp đồng
     hop_dong = models.ForeignKey(
+
+        # Liên kết tới bảng Hop_Dong
         Hop_Dong,
+
+        # Nếu hợp đồng bị xóa thì thanh toán cũng bị xóa
         on_delete=models.CASCADE
     )
 
+    # Ngày thanh toán
     ngay_thanh_toan = models.DateField()
 
+    # Số tiền thanh toán
     so_tien = models.DecimalField(
+
+        # Tổng số chữ số
         max_digits=15,
+
+        # Số chữ số sau dấu phẩy
         decimal_places=2
     )
 
-    ghi_chu = models.TextField(blank=True)
+    # Ghi chú thanh toán
+    ghi_chu = models.TextField(
 
+        # Cho phép để trống
+        blank=True
+    )
+
+    # Hiển thị mã thanh toán trong admin
     def __str__(self):
         return f"TT-{self.id}"
 ```
-
----
-
 # 13. TẠO DATABASE
 
 ## Tạo migration
