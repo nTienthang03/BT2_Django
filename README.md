@@ -800,8 +800,6 @@ urlpatterns = [
 
 ---
 
-
-```
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/148bc5f4-800b-4a98-b63e-03d050619c11" />
 
 # 20. Public Website Django bằng Cloudflare Tunnel
@@ -831,12 +829,14 @@ cloudflared --version
 Nếu hiện version là cài thành công.
 
 ---
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/30515081-5359-4160-bd6b-88cf13184bf4" />
 
 # Bước 4: Đăng nhập Cloudflare
 
 ```bash
 cloudflared tunnel login
 ```
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/31801a6e-e6b9-4d31-a7c9-4ba4c9a9f3f6" />
 
 Ubuntu sẽ hiện link dạng:
 
@@ -847,6 +847,7 @@ https://dash.cloudflare.com/argotunnel?aud=...
 Copy link và mở trên trình duyệt.
 
 ---
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/c6085fa2-24f6-4cc9-8172-9a0afdd6bc20" />
 
 # Bước 5: Authorize Cloudflare
 
@@ -879,6 +880,7 @@ Kết quả sẽ hiện:
 Tunnel credentials written to:
 /home/USERNAME/.cloudflared/xxxxxxxx.json
 ```
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f1de6ec6-c12c-4659-bbad-5f36b5d15900" />
 
 Copy lại:
 
@@ -907,12 +909,12 @@ nano ~/.cloudflared/config.yml
 # Nội dung config.yml
 
 ```yaml
-tunnel: YOUR_TUNNEL_ID
+tunnel: 97d48e9c-e471-4a69-9c68-5479e0b57adc
 
-credentials-file: /home/YOUR_USERNAME/.cloudflared/YOUR_TUNNEL_ID.json
+credentials-file: /home/nguyentienthang/.cloudflared/97d48e9c-e471-4a69-9c68-5479e0b57adc.json
 
 ingress:
-  - hostname: pawnshop.yourdomain.com
+  - hostname: pawnshop.nthangi.id.vn
     service: http://localhost:8000
 
   - service: http_status:404
@@ -920,21 +922,6 @@ ingress:
 
 ---
 
-# Ví dụ thực tế
-
-```yaml
-tunnel: 12345678-abcd-1234-abcd-123456789abc
-
-credentials-file: /home/nguyentienthang/.cloudflared/12345678-abcd-1234-abcd-123456789abc.json
-
-ingress:
-  - hostname: camdo.example.com
-    service: http://localhost:8000
-
-  - service: http_status:404
-```
-
----
 
 # Bước 9: Kiểm tra file config
 
@@ -947,13 +934,13 @@ cat ~/.cloudflared/config.yml
 # Bước 10: Tạo DNS
 
 ```bash
-cloudflared tunnel route dns pawnshop pawnshop.yourdomain.com
+cloudflared tunnel route dns pawnshop pawnshop.nthangi.id.vn
 ```
 
-Ví dụ:
+Kết quả:
 
-```bash
-cloudflared tunnel route dns pawnshop camdo.example.com
+```text
+Added CNAME pawnshop.nthangi.id.vn which will route to this tunnel
 ```
 
 ---
@@ -964,19 +951,27 @@ cloudflared tunnel route dns pawnshop camdo.example.com
 cloudflared tunnel run pawnshop
 ```
 
+Nếu thành công sẽ hiện:
+
+```text
+Registered tunnel connection
+```
+
 ---
 
 # Bước 12: Kiểm tra kết quả
 
-Mở:
+Mở website:
 
 ```text
-https://pawnshop.yourdomain.com
+https://pawnshop.nthangi.id.vn
 ```
 
 Nếu website Django hiển thị là thành công.
 
 ---
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/9fdaa5b7-cd2d-497c-bea3-ded591863d10" />
 
 # Lưu ý
 
@@ -988,4 +983,37 @@ Tunnel sẽ dừng
 Website sẽ offline
 ```
 
+# Kết luận
 
+Qua bài thực hành này, đã xây dựng thành công hệ thống quản lý tiệm cầm đồ sử dụng:
+
+- Ubuntu
+- Docker
+- Docker Compose
+- Django
+- MariaDB
+- PhpMyAdmin
+- Cloudflare Tunnel
+
+Hệ thống đã:
+
+- Tổ chức cơ sở dữ liệu đúng mô hình quan hệ SQL
+- Kết nối Django với MariaDB thành công
+- Tạo các bảng dữ liệu bằng Django Models
+- Thực hiện migrate dữ liệu tự động
+- Sử dụng Django Admin để thêm, sửa, xoá dữ liệu
+- Hiển thị dữ liệu bằng Template HTML và Jinja2
+- Hiển thị danh sách con nợ đến hạn
+- Kiểm tra được dữ liệu và khoá ngoại bằng PhpMyAdmin
+- Đóng gói toàn bộ hệ thống bằng Docker
+- Public website thành công bằng Cloudflare Tunnel
+
+Qua bài này đã hiểu được:
+
+- Cách triển khai ứng dụng Django bằng Docker
+- Cách hoạt động của MariaDB và Foreign Key
+- Cách sử dụng Docker Compose quản lý nhiều service
+- Cách render dữ liệu bằng Django Template
+- Cách public website nội bộ ra internet bằng Cloudflare Tunnel
+
+Website đã hoạt động ổn định trên local và truy cập được từ internet thông qua sub-domain Cloudflare.
