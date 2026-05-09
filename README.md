@@ -604,6 +604,9 @@ admin.site.register(Thanh_Toan)
 
 ---
 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b48786c8-ee20-4490-8bc0-5a15676d9b3a" />
+
+
 # 15. TẠO TÀI KHOẢN ADMIN
 
 ```bash
@@ -611,6 +614,16 @@ docker compose exec django python manage.py createsuperuser
 ```
 
 ---
+TK: admin 
+mail : admin @gmail.com
+pass :123456
+#  Tạo Dữ Liệu ảo 
+ 1 Tạo Khách hàng 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/991773d4-07ca-414c-9c89-c19fae4e02ed" />
+ 2 Tạo hợp đồng cho khách 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/dcb38609-bac6-400d-bcb7-909e1f57f69d" />
+
+ 
 
 # 16. DJANGO ADMIN
 
@@ -619,6 +632,7 @@ docker compose exec django python manage.py createsuperuser
 ```text
 http://IP_SERVER:8000/admin
 ```
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/66b733b1-3415-4769-beac-c0298a35b10a" />
 
 ## Chức năng
 
@@ -637,6 +651,7 @@ http://IP_SERVER:8000/admin
 ```text
 http://IP_SERVER:8080
 ```
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/32bb0a25-4a14-46d4-a006-d07a3ae9f71e" />
 
 ## Kiểm tra
 
@@ -785,31 +800,192 @@ urlpatterns = [
 
 ---
 
-# 20. CLOUDFLARE TUNNEL
 
-## Public website
+```
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/148bc5f4-800b-4a98-b63e-03d050619c11" />
+
+# 20. Public Website Django bằng Cloudflare Tunnel
+
+## Bước 1: Download Cloudflared
 
 ```bash
-cloudflared tunnel --url http://localhost:8000
+wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
 ```
-
-## Kết quả
-
-- Public website thành công
-- Có sub-domain truy cập từ Internet
-- Chụp ảnh kết quả
 
 ---
 
-# 21. KẾT QUẢ ĐẠT ĐƯỢC
+# Bước 2: Cài đặt Cloudflared
 
-- Docker hoạt động thành công
-- Django kết nối MariaDB
-- PhpMyAdmin xem được dữ liệu
-- Django Admin hoạt động
-- CRUD dữ liệu thành công
-- Foreign Key hoạt động đúng
-- Template Jinja2 hiển thị dữ liệu
-- Public website bằng Cloudflare Tunnel
+```bash
+sudo dpkg -i cloudflared-linux-amd64.deb
+```
+
+---
+
+# Bước 3: Kiểm tra phiên bản
+
+```bash
+cloudflared --version
+```
+
+Nếu hiện version là cài thành công.
+
+---
+
+# Bước 4: Đăng nhập Cloudflare
+
+```bash
+cloudflared tunnel login
+```
+
+Ubuntu sẽ hiện link dạng:
+
+```text
+https://dash.cloudflare.com/argotunnel?aud=...
+```
+
+Copy link và mở trên trình duyệt.
+
+---
+
+# Bước 5: Authorize Cloudflare
+
+Cloudflare sẽ hỏi:
+
+```text
+Authorize Cloudflared
+```
+
+- Chọn domain
+- Nhấn `Authorize`
+
+Nếu thành công Ubuntu sẽ hiện:
+
+```text
+You have successfully logged in.
+```
+
+---
+
+# Bước 6: Tạo Tunnel
+
+```bash
+cloudflared tunnel create pawnshop
+```
+
+Kết quả sẽ hiện:
+
+```text
+Tunnel credentials written to:
+/home/USERNAME/.cloudflared/xxxxxxxx.json
+```
+
+Copy lại:
+
+```text
+Tunnel ID
+```
+
+---
+
+# Bước 7: Tạo thư mục config
+
+```bash
+mkdir -p ~/.cloudflared
+```
+
+---
+
+# Bước 8: Tạo file config.yml
+
+```bash
+nano ~/.cloudflared/config.yml
+```
+
+---
+
+# Nội dung config.yml
+
+```yaml
+tunnel: YOUR_TUNNEL_ID
+
+credentials-file: /home/YOUR_USERNAME/.cloudflared/YOUR_TUNNEL_ID.json
+
+ingress:
+  - hostname: pawnshop.yourdomain.com
+    service: http://localhost:8000
+
+  - service: http_status:404
+```
+
+---
+
+# Ví dụ thực tế
+
+```yaml
+tunnel: 12345678-abcd-1234-abcd-123456789abc
+
+credentials-file: /home/nguyentienthang/.cloudflared/12345678-abcd-1234-abcd-123456789abc.json
+
+ingress:
+  - hostname: camdo.example.com
+    service: http://localhost:8000
+
+  - service: http_status:404
+```
+
+---
+
+# Bước 9: Kiểm tra file config
+
+```bash
+cat ~/.cloudflared/config.yml
+```
+
+---
+
+# Bước 10: Tạo DNS
+
+```bash
+cloudflared tunnel route dns pawnshop pawnshop.yourdomain.com
+```
+
+Ví dụ:
+
+```bash
+cloudflared tunnel route dns pawnshop camdo.example.com
+```
+
+---
+
+# Bước 11: Chạy Tunnel
+
+```bash
+cloudflared tunnel run pawnshop
+```
+
+---
+
+# Bước 12: Kiểm tra kết quả
+
+Mở:
+
+```text
+https://pawnshop.yourdomain.com
+```
+
+Nếu website Django hiển thị là thành công.
+
+---
+
+# Lưu ý
+
+- Không được tắt Terminal Ubuntu
+- Nếu tắt Terminal:
+  
+```text
+Tunnel sẽ dừng
+Website sẽ offline
+```
 
 
